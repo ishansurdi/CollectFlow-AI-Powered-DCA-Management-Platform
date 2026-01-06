@@ -1,0 +1,52 @@
+[
+  {
+    "account_number": "ACC001",
+    "customer_id": "CUST001",
+    "amount_overdue": 15000,
+    "original_amount": 20000,
+    "overdue_days": 45,
+    "invoice_date": "2024-09-15T00:00:00Z",
+    "due_date": "2024-10-15T00:00:00Z",
+    "status": "new"
+  },
+  {
+    "account_number": "ACC002",
+    "customer_id": "CUST002",
+    "amount_overdue": 75000,
+    "original_amount": 75000,
+    "overdue_days": 90,
+    "invoice_date": "2024-07-01T00:00:00Z",
+    "due_date": "2024-08-01T00:00:00Z",
+    "status": "new"
+  },
+  {
+    "account_number": "ACC003",
+    "customer_id": "CUST003",
+    "amount_overdue": 5000,
+    "original_amount": 8000,
+    "overdue_days": 20,
+    "invoice_date": "2024-11-10T00:00:00Z",
+    "due_date": "2024-12-10T00:00:00Z",
+    "status": "new"
+  },
+  {
+    "account_number": "ACC004",
+    "customer_id": "CUST004",
+    "amount_overdue": 35000,
+    "original_amount": 40000,
+    "overdue_days": 60,
+    "invoice_date": "2024-08-20T00:00:00Z",
+    "due_date": "2024-09-20T00:00:00Z",
+    "status": "new"
+  },
+  {
+    "account_number": "ACC005",
+    "customer_id": "CUST005",
+    "amount_overdue": 120000,
+    "original_amount": 150000,
+    "overdue_days": 120,
+    "invoice_date": "2024-06-01T00:00:00Z",
+    "due_date": "2024-07-01T00:00:00Z",
+    "status": "new"
+  }
+]

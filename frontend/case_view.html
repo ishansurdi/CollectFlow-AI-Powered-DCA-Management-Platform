@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Details - CollectFlow DCA Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <button onclick="goBack()" class="mr-4 text-purple-600 hover:text-purple-700">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <i class="fas fa-folder-open text-purple-600 text-2xl mr-3"></i>
+                <h1 class="text-xl font-bold text-gray-800">Case Details</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-gray-700"></span>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Case Information -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-bold text-gray-800">Case Information</h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="case-info" class="grid grid-cols-2 gap-4">
+                            <p class="text-gray-500">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions History -->
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-bold text-gray-800">Actions & History</h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="case-history" class="space-y-4">
+                            <p class="text-gray-500">Loading history...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-bold text-gray-800">Notes</h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="case-notes" class="space-y-3 mb-4">
+                            <!-- Notes will be loaded here -->
+                        </div>
+                        <div class="border-t pt-4">
+                            <textarea 
+                                id="new-note" 
+                                rows="3" 
+                                class="w-full border rounded px-3 py-2 mb-2" 
+                                placeholder="Add a note..."
+                            ></textarea>
+                            <button onclick="addNote()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+                                <i class="fas fa-plus mr-2"></i>Add Note
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Panel -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-bold text-gray-800">Quick Actions</h3>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <button onclick="updateStatus('in_progress')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                            <i class="fas fa-play mr-2"></i>Start Work
+                        </button>
+                        <button onclick="recordPayment()" class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                            <i class="fas fa-dollar-sign mr-2"></i>Record Payment
+                        </button>
+                        <button onclick="updateStatus('resolved')" class="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                            <i class="fas fa-check mr-2"></i>Mark Resolved
+                        </button>
+                        <button onclick="escalateCase()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>Escalate
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-bold text-gray-800">
+                            <i class="fas fa-robot text-purple-600 mr-2"></i>AI Insights
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div id="ai-insights">
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-500">Recovery Probability</p>
+                                <p id="recovery-prob" class="text-2xl font-bold text-gray-800">-</p>
+                            </div>
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-500">Expected Recovery</p>
+                                <p id="expected-amount" class="text-2xl font-bold text-gray-800">$-</p>
+                            </div>
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-500">Expected Days</p>
+                                <p id="expected-days" class="text-2xl font-bold text-gray-800">- days</p>
+                            </div>
+                            <button onclick="getAIPrediction()" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded mt-4">
+                                <i class="fas fa-magic mr-2"></i>Get AI Prediction
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/auth.js"></script>
+    <script src="./assets/js/cases.js"></script>
+</body>
+</html>

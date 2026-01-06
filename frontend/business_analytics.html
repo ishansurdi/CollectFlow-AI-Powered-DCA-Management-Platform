@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analytics | CollectFlow Command</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .brand-line {
+            width: 4px;
+            height: 24px;
+            background: #FF6B00;
+            border-radius: 2px;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.15s ease;
+        }
+        .kpi-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- NAVIGATION SIDEBAR -->
+    <aside class="w-20 lg:w-[260px] bg-white border-r border-slate-200 flex flex-col transition-all duration-300 z-50">
+        <div class="p-6 flex items-center gap-3 border-b border-slate-200">
+            <div class="brand-line"></div>
+            <div class="hidden lg:block leading-none">
+                <span class="text-xl font-bold text-slate-900">CollectFlow</span>
+                <p class="text-xs text-slate-500 font-semibold">DCA Command</p>
+            </div>
+        </div>
+
+        <nav class="flex-grow px-4 mt-6 space-y-1">
+            <a href="/dashboard.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-chart-line w-6"></i>
+                <span class="hidden lg:block ml-3">Operations Hub</span>
+            </a>
+            <a href="/case_management.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="hidden lg:block ml-3">Case Management</span>
+            </a>
+            <a href="/business_analytics.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg bg-slate-100 text-slate-900 border-l-4 border-l-orange-500">
+                <i class="fas fa-chart-pie w-6"></i>
+                <span class="hidden lg:block ml-3">Business Analytics</span>
+            </a>
+            <a href="/agents_dashboard.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-robot w-6"></i>
+                <span class="hidden lg:block ml-3">AI Agents</span>
+            </a>
+            <a href="/rpa_integration.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-gears w-6"></i>
+                <span class="hidden lg:block ml-3">RPA Integration</span>
+            </a>
+            <a href="/dca_portal.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-users-gear w-6"></i>
+                <span class="hidden lg:block ml-3">DCA Portal</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200">
+            <div class="px-4 py-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <div class="h-9 w-9 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="hidden lg:block">
+                        <p id="user-name" class="text-xs font-semibold text-slate-900 leading-none">System Admin</p>
+                        <button onclick="logout()" class="text-xs text-slate-500 mt-1 hover:text-slate-900 transition-colors">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN INTERFACE -->
+    <div class="flex-grow flex flex-col min-w-0 bg-slate-50">
+        
+        <!-- HEADER -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0">
+            <div class="flex items-center gap-4">
+                <h2 class="text-lg font-bold text-slate-900">Business Analytics</h2>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="exportToExcel()" class="px-4 py-2 bg-slate-900 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold uppercase tracking-wide transition-all">
+                    <i class="fas fa-file-excel mr-2"></i>Export to Excel
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow overflow-y-auto custom-scrollbar p-6">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <!-- Hero Section -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Real-Time Metrics</span>
+                        </div>
+                        <h1 class="text-2xl font-bold text-slate-900">Performance Dashboard</h1>
+                        <p class="text-slate-600 text-sm mt-1">Comprehensive KPI monitoring and business intelligence.</p>
+                    </div>
+                </div>
+
+                <!-- Primary KPIs -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <!-- DSO -->
+                    <div class="kpi-card p-6 rounded-3xl shadow-sm">
+                        <div class="flex justify-between items-center mb-5">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Days Sales Outstanding</span>
+                            <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-calendar-alt text-blue-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h3 id="dso" class="text-4xl font-extrabold text-[#050B20] tracking-tighter">-</h3>
+                                <p class="text-[11px] text-slate-500 mt-1 font-bold">Average collection time</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collection Efficiency -->
+                    <div class="kpi-card p-6 rounded-3xl shadow-sm bg-gradient-to-br from-green-50 to-white">
+                        <div class="flex justify-between items-center mb-5">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Collection Efficiency</span>
+                            <div class="h-10 w-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-percentage text-green-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h3 id="collection-efficiency" class="text-4xl font-extrabold text-green-600 tracking-tighter">-%</h3>
+                                <p class="text-[11px] text-green-500 mt-1 font-bold">Recovery vs assigned</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recovery Yield -->
+                    <div class="kpi-card p-6 rounded-3xl shadow-sm">
+                        <div class="flex justify-between items-center mb-5">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Recovery Yield</span>
+                            <div class="h-10 w-10 bg-purple-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-coins text-purple-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h3 id="recovery-yield" class="text-4xl font-extrabold text-[#4D148C] tracking-tighter">$-</h3>
+                                <p class="text-[11px] text-purple-500 mt-1 font-bold">Avg per resolved case</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SLA Compliance -->
+                    <div class="kpi-card p-6 rounded-3xl shadow-sm border-l-4 border-l-yellow-500">
+                        <div class="flex justify-between items-center mb-5">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">SLA Compliance</span>
+                            <div class="h-10 w-10 bg-yellow-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-check-circle text-yellow-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <h3 id="sla-compliance" class="text-4xl font-extrabold text-yellow-600 tracking-tighter">-%</h3>
+                                <p class="text-[11px] text-yellow-500 mt-1 font-bold uppercase">On-time resolution</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary KPIs Grid -->
+                <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm p-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-[#050B20]">Operational Metrics</h3>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Advanced Performance Indicators</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- RPC Rate -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-phone text-indigo-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Right Party Contact</p>
+                                    <h4 id="rpc-rate" class="text-2xl font-extrabold text-slate-900">-%</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">Successful contact rate</p>
+                        </div>
+
+                        <!-- PTP Kept Rate -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-handshake text-emerald-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Promise to Pay Kept</p>
+                                    <h4 id="ptp-kept" class="text-2xl font-extrabold text-slate-900">-%</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">Payment promise fulfillment</p>
+                        </div>
+
+                        <!-- TTFP -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-clock text-orange-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Time to First Payment</p>
+                                    <h4 id="ttfp" class="text-2xl font-extrabold text-slate-900">- days</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">Average days to 1st payment</p>
+                        </div>
+
+                        <!-- Net Recovery Rate -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-chart-line text-teal-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Net Recovery Rate</p>
+                                    <h4 id="net-recovery" class="text-2xl font-extrabold text-slate-900">-%</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">After fees & costs</p>
+                        </div>
+
+                        <!-- Liquidation Rate -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-pink-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-funnel-dollar text-pink-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Liquidation Rate</p>
+                                    <h4 id="liquidation-rate" class="text-2xl font-extrabold text-slate-900">-%</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">Portfolio resolution rate</p>
+                        </div>
+
+                        <!-- Roll Rate -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-arrow-trend-down text-red-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Roll Rate</p>
+                                    <h4 id="roll-rate" class="text-2xl font-extrabold text-slate-900">-%</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">Delinquency progression</p>
+                        </div>
+
+                        <!-- Cost to Collect -->
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div class="flex items-center gap-4 mb-3">
+                                <div class="h-12 w-12 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fas fa-dollar-sign text-amber-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cost to Collect</p>
+                                    <h4 id="cost-to-collect" class="text-2xl font-extrabold text-slate-900">$-</h4>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 font-bold">Per dollar recovered</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Recovery Trend -->
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
+                        <div class="mb-6">
+                            <h3 class="text-lg font-extrabold text-[#050B20]">30-Day Recovery Trend</h3>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Daily Recovery Amount ($)</p>
+                        </div>
+                        <div class="h-[300px]">
+                            <canvas id="recovery-trend-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Aging Distribution -->
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
+                        <div class="mb-6">
+                            <h3 class="text-lg font-extrabold text-[#050B20]">Portfolio Aging</h3>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Cases by Age Bucket</p>
+                        </div>
+                        <div class="h-[300px]">
+                            <canvas id="aging-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Analytics -->
+                <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm p-10">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-extrabold text-[#050B20]">Portfolio Analytics</h3>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Amount Distribution & Top Accounts</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Amount Distribution -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-600 mb-4">Amount Distribution</h4>
+                            <div id="amount-distribution" class="space-y-3">
+                                <p class="text-slate-500">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- Top Accounts -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-600 mb-4">Top 10 Accounts by Amount</h4>
+                            <div id="top-accounts" class="space-y-3">
+                                <p class="text-slate-500">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/auth.js"></script>
+    <script>
+        let recoveryTrendChart, agingChart;
+
+        async function loadBusinessMetrics() {
+            try {
+                const metrics = await api.getBusinessMetrics();
+                
+                // Primary KPIs
+                document.getElementById('dso').textContent = metrics.dso?.toFixed(1) || '0.0';
+                document.getElementById('collection-efficiency').textContent = (metrics.collection_efficiency_rate || 0).toFixed(1) + '%';
+                document.getElementById('recovery-yield').textContent = '$' + (metrics.recovery_yield || 0).toLocaleString();
+                document.getElementById('sla-compliance').textContent = (metrics.sla_compliance_rate || 0).toFixed(1) + '%';
+                
+                // Secondary KPIs
+                document.getElementById('rpc-rate').textContent = (metrics.rpc_rate || 0).toFixed(1) + '%';
+                document.getElementById('ptp-kept').textContent = (metrics.ptp_kept_rate || 0).toFixed(1) + '%';
+                document.getElementById('ttfp').textContent = (metrics.avg_time_to_first_payment || 0).toFixed(1) + ' days';
+                document.getElementById('net-recovery').textContent = (metrics.net_recovery_rate || 0).toFixed(1) + '%';
+                document.getElementById('liquidation-rate').textContent = (metrics.liquidation_rate || 0).toFixed(1) + '%';
+                document.getElementById('roll-rate').textContent = (metrics.roll_rate || 0).toFixed(1) + '%';
+                document.getElementById('cost-to-collect').textContent = '$' + (metrics.cost_to_collect || 0).toFixed(2);
+                
+            } catch (error) {
+                console.error('Error loading business metrics:', error);
+            }
+        }
+
+        async function loadPortfolioAnalytics() {
+            try {
+                const [metrics, portfolio] = await Promise.all([
+                    api.getBusinessMetrics(),
+                    api.getPortfolioAnalytics()
+                ]);
+                
+                // Recovery Trend Chart (from business metrics)
+                const trendCtx = document.getElementById('recovery-trend-chart');
+                if (recoveryTrendChart) recoveryTrendChart.destroy();
+                
+                const trendData = metrics.daily_recovery_trend || [];
+                recoveryTrendChart = new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: trendData.map(d => new Date(d.date).toLocaleDateString()),
+                        datasets: [{
+                            label: 'Recovery Amount',
+                            data: trendData.map(d => d.amount),
+                            borderColor: '#4D148C',
+                            backgroundColor: 'rgba(77, 20, 140, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+                
+                // Aging Distribution Chart
+                const agingCtx = document.getElementById('aging-chart');
+                if (agingChart) agingChart.destroy();
+                
+                const agingData = portfolio.aging_distribution || [];
+                agingChart = new Chart(agingCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: agingData.map(d => d.bucket),
+                        datasets: [{
+                            data: agingData.map(d => d.count),
+                            backgroundColor: ['#22c55e', '#eab308', '#f97316', '#ef4444', '#9333ea']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                
+                // Amount Distribution
+                const amountDist = portfolio.amount_distribution || [];
+                const amountContainer = document.getElementById('amount-distribution');
+                amountContainer.innerHTML = amountDist.map(item => `
+                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
+                        <span class="text-sm font-bold text-slate-700">${item.range}</span>
+                        <span class="text-lg font-black text-[#4D148C]">${item.count}</span>
+                    </div>
+                `).join('');
+                
+                // Top Accounts
+                const topAccounts = portfolio.top_accounts || [];
+                const topContainer = document.getElementById('top-accounts');
+                topContainer.innerHTML = topAccounts.map((acc, i) => `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center text-xs font-black text-[#4D148C]">${i + 1}</div>
+                            <span class="text-sm font-bold text-slate-700">${acc.account_number}</span>
+                        </div>
+                        <span class="text-lg font-black text-[#4D148C]">$${(acc.amount || 0).toLocaleString()}</span>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading portfolio analytics:', error);
+            }
+        }
+
+        // Export to Excel Function
+        async function exportToExcel() {
+            try {
+                const button = event.target.closest('button');
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating...';
+
+                // Fetch all data using API client
+                const [businessMetrics, kpis, casesData, dcasData, rankings] = await Promise.all([
+                    api.getBusinessMetrics(),
+                    api.getKPIs(),
+                    api.getCases(),
+                    api.getDCAs(),
+                    api.getDCARankings()
+                ]);
+
+                // Merge metrics
+                const metrics = { ...businessMetrics, ...kpis };
+
+                // Create workbook
+                const wb = XLSX.utils.book_new();
+
+                // Sheet 1: Executive Summary
+                const summaryData = [
+                    ['CollectFlow DCA Management System - Business Analytics Report'],
+                    ['Generated:', new Date().toLocaleString()],
+                    ['Report Period:', 'All Time'],
+                    [],
+                    ['KEY PERFORMANCE INDICATORS'],
+                    ['Metric', 'Value', 'Status'],
+                    ['Total Cases', metrics.total_cases || 0, 'Active'],
+                    ['Resolved Cases', metrics.resolved_cases || 0, 'Tracking'],
+                    ['Resolution Rate', `${(metrics.resolution_rate || 0).toFixed(1)}%`, metrics.resolution_rate >= 70 ? 'Good' : 'Needs Improvement'],
+                    ['Average Recovery Time', `${(metrics.avg_recovery_time || 0).toFixed(1)} days`, metrics.avg_recovery_time <= 30 ? 'Excellent' : 'Review'],
+                    ['SLA Compliance Rate', `${(metrics.sla_compliance_rate || 0).toFixed(1)}%`, metrics.sla_compliance_rate >= 90 ? 'Excellent' : 'Review'],
+                    ['Total Recovery Amount', `$${(metrics.total_recovery || 0).toLocaleString()}`, 'Tracking'],
+                    ['Active DCAs', metrics.active_dcas || 0, 'Operational'],
+                    ['SLA Breaches', metrics.sla_breaches || 0, metrics.sla_breaches < 5 ? 'Under Control' : 'Action Required'],
+                    ['DSO (Days Sales Outstanding)', (metrics.dso || 0).toFixed(1), 'Tracking'],
+                    ['Collection Efficiency', `${(metrics.collection_efficiency_rate || 0).toFixed(1)}%`, 'Tracking'],
+                    [],
+                    ['ADVANCED METRICS'],
+                    ['RPC Rate', `${(metrics.rpc_rate || 0).toFixed(1)}%`, 'Tracking'],
+                    ['PTP Kept Rate', `${(metrics.ptp_kept_rate || 0).toFixed(1)}%`, 'Tracking'],
+                    ['Net Recovery Rate', `${(metrics.net_recovery_rate || 0).toFixed(1)}%`, 'Tracking'],
+                    ['Liquidation Rate', `${(metrics.liquidation_rate || 0).toFixed(1)}%`, 'Tracking'],
+                    ['Cost to Collect', `$${(metrics.cost_to_collect || 0).toFixed(2)}`, 'Tracking'],
+                    [],
+                    ['PRIORITY DISTRIBUTION'],
+                    ['Priority', 'Count', 'Percentage'],
+                ];
+
+                // Add priority breakdown
+                const casesArray = Array.isArray(casesData) ? casesData : (casesData.cases || []);
+                const priorityCounts = {};
+                casesArray.forEach(c => {
+                    const p = (c.priority || 'medium').toLowerCase();
+                    priorityCounts[p] = (priorityCounts[p] || 0) + 1;
+                });
+                
+                Object.entries(priorityCounts).forEach(([priority, count]) => {
+                    const percentage = casesArray.length ? ((count / casesArray.length) * 100).toFixed(1) : 0;
+                    summaryData.push([priority.toUpperCase(), count, `${percentage}%`]);
+                });
+
+                const ws_summary = XLSX.utils.aoa_to_sheet(summaryData);
+                ws_summary['!cols'] = [{wch: 30}, {wch: 20}, {wch: 20}];
+                XLSX.utils.book_append_sheet(wb, ws_summary, 'Executive Summary');
+
+                // Sheet 2: All Cases Detail
+                const casesExport = casesArray.map(c => {
+                    const daysOpen = c.created_at ? Math.floor((new Date() - new Date(c.created_at)) / (1000 * 60 * 60 * 24)) : 0;
+                    return {
+                        'Case ID': c.case_id || c._id,
+                        'Account Number': c.account_number || 'N/A',
+                        'Customer Name': c.customer_name || 'N/A',
+                        'Principal Amount': c.principal_amount || 0,
+                        'Outstanding Amount': c.outstanding_amount || c.principal_amount || 0,
+                        'Priority': (c.priority || 'medium').toUpperCase(),
+                        'Status': (c.status || 'pending').toUpperCase(),
+                        'Assigned DCA': c.dca_name || 'Unassigned',
+                        'Created Date': c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A',
+                        'Due Date': c.sla_due_date ? new Date(c.sla_due_date).toLocaleDateString() : 'N/A',
+                        'Days Open': daysOpen,
+                        'Days Past Due': c.days_overdue || 0,
+                        'Resolution Date': c.resolution_date ? new Date(c.resolution_date).toLocaleDateString() : 'Pending',
+                        'Recovery Amount': c.recovered_amount || 0,
+                        'Recovery Rate': c.recovered_amount && c.principal_amount ? `${((c.recovered_amount / c.principal_amount) * 100).toFixed(1)}%` : '0%'
+                    };
+                });
+
+                const ws_cases = XLSX.utils.json_to_sheet(casesExport);
+                ws_cases['!cols'] = [
+                    {wch: 12}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 15},
+                    {wch: 10}, {wch: 12}, {wch: 20}, {wch: 12}, {wch: 12},
+                    {wch: 10}, {wch: 12}, {wch: 15}, {wch: 15}, {wch: 12}
+                ];
+                XLSX.utils.book_append_sheet(wb, ws_cases, 'All Cases');
+
+                // Sheet 3: DCA Performance
+                const dcasArray = Array.isArray(dcasData) ? dcasData : (dcasData.dcas || []);
+                const dcaPerformance = dcasArray.map(dca => ({
+                    'DCA Name': dca.name || 'N/A',
+                    'Agency Type': dca.agency_type || 'Standard',
+                    'Status': dca.status || 'active',
+                    'Total Cases Assigned': dca.total_assigned || 0,
+                    'Cases Resolved': dca.cases_resolved || 0,
+                    'Cases In Progress': dca.cases_in_progress || 0,
+                    'Resolution Rate': dca.resolution_rate ? `${dca.resolution_rate.toFixed(1)}%` : '0%',
+                    'Avg Resolution Time': `${(dca.avg_resolution_days || 0).toFixed(1)} days`,
+                    'Total Recovery': `$${(dca.total_recovered || 0).toLocaleString()}`,
+                    'Performance Score': (dca.performance_score || 0).toFixed(1),
+                    'Contact Email': dca.contact_email || 'N/A',
+                    'Contact Phone': dca.contact_phone || 'N/A'
+                }));
+
+                const ws_dcas = XLSX.utils.json_to_sheet(dcaPerformance);
+                ws_dcas['!cols'] = [
+                    {wch: 25}, {wch: 15}, {wch: 10}, {wch: 15}, {wch: 12},
+                    {wch: 15}, {wch: 15}, {wch: 18}, {wch: 15}, {wch: 15},
+                    {wch: 25}, {wch: 15}
+                ];
+                XLSX.utils.book_append_sheet(wb, ws_dcas, 'DCA Performance');
+
+                // Sheet 4: Cases by Status
+                const statusBreakdown = {};
+                casesArray.forEach(c => {
+                    const status = (c.status || 'pending').toLowerCase();
+                    if (!statusBreakdown[status]) {
+                        statusBreakdown[status] = { count: 0, totalAmount: 0, recovered: 0 };
+                    }
+                    statusBreakdown[status].count++;
+                    statusBreakdown[status].totalAmount += (c.principal_amount || 0);
+                    statusBreakdown[status].recovered += (c.recovered_amount || 0);
+                });
+
+                const statusData = Object.entries(statusBreakdown).map(([status, data]) => ({
+                    'Status': status.toUpperCase(),
+                    'Case Count': data.count,
+                    'Total Principal': `$${data.totalAmount.toLocaleString()}`,
+                    'Total Recovered': `$${data.recovered.toLocaleString()}`,
+                    'Recovery Rate': data.totalAmount ? `${((data.recovered / data.totalAmount) * 100).toFixed(1)}%` : '0%'
+                }));
+
+                const ws_status = XLSX.utils.json_to_sheet(statusData);
+                ws_status['!cols'] = [{wch: 15}, {wch: 12}, {wch: 18}, {wch: 18}, {wch: 15}];
+                XLSX.utils.book_append_sheet(wb, ws_status, 'Status Analysis');
+
+                // Sheet 5: Cases by Priority
+                const priorityBreakdownDetailed = {};
+                casesArray.forEach(c => {
+                    const priority = (c.priority || 'medium').toLowerCase();
+                    if (!priorityBreakdownDetailed[priority]) {
+                        priorityBreakdownDetailed[priority] = { count: 0, totalAmount: 0, totalDays: 0 };
+                    }
+                    priorityBreakdownDetailed[priority].count++;
+                    priorityBreakdownDetailed[priority].totalAmount += (c.principal_amount || 0);
+                    const daysOpen = c.created_at ? Math.floor((new Date() - new Date(c.created_at)) / (1000 * 60 * 60 * 24)) : 0;
+                    priorityBreakdownDetailed[priority].totalDays += daysOpen;
+                });
+
+                const priorityData = Object.entries(priorityBreakdownDetailed).map(([priority, data]) => ({
+                    'Priority': priority.toUpperCase(),
+                    'Case Count': data.count,
+                    'Total Amount': `$${data.totalAmount.toLocaleString()}`,
+                    'Avg Days Open': Math.round(data.totalDays / data.count) || 0
+                }));
+
+                const ws_priority = XLSX.utils.json_to_sheet(priorityData);
+                ws_priority['!cols'] = [{wch: 12}, {wch: 12}, {wch: 18}, {wch: 15}];
+                XLSX.utils.book_append_sheet(wb, ws_priority, 'Priority Analysis');
+
+                // Sheet 6: High-Value Cases (>$50K)
+                const highValueCases = casesArray
+                    .filter(c => (c.principal_amount || 0) >= 50000)
+                    .sort((a, b) => (b.principal_amount || 0) - (a.principal_amount || 0))
+                    .map(c => {
+                        const daysOpen = c.created_at ? Math.floor((new Date() - new Date(c.created_at)) / (1000 * 60 * 60 * 24)) : 0;
+                        return {
+                            'Case ID': c.case_id || c._id || '',
+                            'Account': c.account_number || '',
+                            'Customer': c.customer_name || '',
+                            'Amount': `$${(c.principal_amount || 0).toLocaleString()}`,
+                            'Status': (c.status || 'pending').toUpperCase(),
+                            'Priority': (c.priority || 'medium').toUpperCase(),
+                            'DCA': c.dca_name || 'Unassigned',
+                            'Days Open': daysOpen,
+                            'Recovery': `$${(c.recovered_amount || 0).toLocaleString()}`
+                        };
+                    });
+
+                const ws_highvalue = XLSX.utils.json_to_sheet(highValueCases);
+                ws_highvalue['!cols'] = [{wch: 12}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 12}, {wch: 10}, {wch: 20}, {wch: 10}, {wch: 15}];
+                XLSX.utils.book_append_sheet(wb, ws_highvalue, 'High-Value Cases');
+
+                // Sheet 7: SLA Tracking
+                const slaData = casesArray.map(c => {
+                    const createdDate = c.created_at ? new Date(c.created_at) : new Date();
+                    const slaDate = c.sla_due_date ? new Date(c.sla_due_date) : null;
+                    const daysToSLA = slaDate ? Math.ceil((slaDate - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                    const isSLABreached = c.sla_breached || (daysToSLA !== null && daysToSLA < 0);
+                    
+                    return {
+                        'Case ID': c.case_id || c._id || '',
+                        'Account': c.account_number || '',
+                        'Status': (c.status || 'pending').toUpperCase(),
+                        'Priority': (c.priority || 'medium').toUpperCase(),
+                        'Created': createdDate.toLocaleDateString(),
+                        'SLA Due Date': slaDate ? slaDate.toLocaleDateString() : 'N/A',
+                        'Days to SLA': daysToSLA !== null ? daysToSLA : 'N/A',
+                        'SLA Status': isSLABreached ? 'BREACHED' : (daysToSLA !== null && daysToSLA <= 1 ? 'AT RISK' : 'ON TRACK'),
+                        'DCA': c.dca_name || 'Unassigned'
+                    };
+                });
+
+                const ws_sla = XLSX.utils.json_to_sheet(slaData);
+                ws_sla['!cols'] = [{wch: 12}, {wch: 15}, {wch: 12}, {wch: 10}, {wch: 12}, {wch: 12}, {wch: 12}, {wch: 15}, {wch: 20}];
+                XLSX.utils.book_append_sheet(wb, ws_sla, 'SLA Tracking');
+
+                // Generate filename with timestamp
+                const timestamp = new Date().toISOString().split('T')[0];
+                const filename = `CollectFlow_DCA_Analytics_Report_${timestamp}.xlsx`;
+
+                // Save file
+                XLSX.writeFile(wb, filename);
+
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-file-excel mr-2"></i>Export to Excel';
+
+                // Show success message
+                alert(`✅ Excel report generated successfully!\n\nFile: ${filename}\n\nSheets included:\n• Executive Summary\n• All Cases\n• DCA Performance\n• Status Analysis\n• Priority Analysis\n• High-Value Cases\n• SLA Tracking`);
+
+            } catch (error) {
+                console.error('Error exporting to Excel:', error);
+                alert('❌ Error generating Excel report. Please try again.');
+                const button = event.target.closest('button');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-file-excel mr-2"></i>Export to Excel';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Protect admin-only page from DCA users
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user.role && user.role.startsWith('dca')) {
+                window.location.href = '/dca_portal.html';
+                return;
+            }
+            
+            await loadBusinessMetrics();
+            await loadPortfolioAnalytics();
+        });
+    </script>
+</body>
+</html>

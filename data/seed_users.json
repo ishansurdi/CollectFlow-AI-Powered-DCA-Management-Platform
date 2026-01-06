@@ -1,0 +1,40 @@
+[
+  {
+    "user_id": "USER001",
+    "email": "admin@fedex.com",
+    "password": "password123",
+    "name": "FedEx Admin",
+    "role": "fedex_admin"
+  },
+  {
+    "user_id": "USER002",
+    "email": "manager@fedex.com",
+    "password": "password123",
+    "name": "FedEx Manager",
+    "role": "fedex_user"
+  },
+  {
+    "user_id": "USER003",
+    "email": "dca1@agency.com",
+    "password": "password123",
+    "name": "DCA Premier Admin",
+    "role": "dca_admin",
+    "dca_id": "DCA001"
+  },
+  {
+    "user_id": "USER004",
+    "email": "agent1@premier.com",
+    "password": "password123",
+    "name": "Premier Agent 1",
+    "role": "dca_agent",
+    "dca_id": "DCA001"
+  },
+  {
+    "user_id": "USER005",
+    "email": "dca2@agency.com",
+    "password": "password123",
+    "name": "DCA Swift Admin",
+    "role": "dca_admin",
+    "dca_id": "DCA002"
+  }
+]

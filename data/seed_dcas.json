@@ -1,0 +1,62 @@
+[
+  {
+    "dca_id": "DCA001",
+    "name": "Premier Recovery Services",
+    "email": "contact@premier-recovery.com",
+    "phone": "+1-555-0101",
+    "specialization": ["commercial", "high_value"],
+    "status": "active",
+    "capacity": 100,
+    "current_cases": 0,
+    "performance_score": 85.5,
+    "recovery_rate": 72.3,
+    "avg_recovery_time": 28.5,
+    "total_recovered": 0,
+    "total_cases": 0
+  },
+  {
+    "dca_id": "DCA002",
+    "name": "Swift Collections Agency",
+    "email": "info@swift-collections.com",
+    "phone": "+1-555-0102",
+    "specialization": ["retail", "general"],
+    "status": "active",
+    "capacity": 75,
+    "current_cases": 0,
+    "performance_score": 78.2,
+    "recovery_rate": 65.8,
+    "avg_recovery_time": 32.1,
+    "total_recovered": 0,
+    "total_cases": 0
+  },
+  {
+    "dca_id": "DCA003",
+    "name": "Global Debt Solutions",
+    "email": "support@global-debt.com",
+    "phone": "+1-555-0103",
+    "specialization": ["international", "commercial"],
+    "status": "active",
+    "capacity": 50,
+    "current_cases": 0,
+    "performance_score": 91.7,
+    "recovery_rate": 80.5,
+    "avg_recovery_time": 25.3,
+    "total_recovered": 0,
+    "total_cases": 0
+  },
+  {
+    "dca_id": "DCA004",
+    "name": "Express Recovery Inc",
+    "email": "hello@express-recovery.com",
+    "phone": "+1-555-0104",
+    "specialization": ["retail", "small_claims"],
+    "status": "active",
+    "capacity": 60,
+    "current_cases": 0,
+    "performance_score": 73.4,
+    "recovery_rate": 58.2,
+    "avg_recovery_time": 35.7,
+    "total_recovered": 0,
+    "total_cases": 0
+  }
+]

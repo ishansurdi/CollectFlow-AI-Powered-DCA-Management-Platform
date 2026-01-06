@@ -1,0 +1,7 @@
+old-copy/
+backend/.env
+__pycache__/
+*.pyc
+backend/.env.example
+diagrams/
+logs/

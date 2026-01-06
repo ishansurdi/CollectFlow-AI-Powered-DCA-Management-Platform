@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - CollectFlow DCA Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+        }
+
+        .credential-card {
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .credential-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-line {
+            width: 4px;
+            height: 48px;
+            background: #FF6B00;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white">
+    
+    <div class="min-h-screen flex">
+        
+        <!-- Left Side - Clean Brand Area -->
+        <div class="hidden lg:flex lg:w-1/2 bg-slate-50 items-center justify-center p-12">
+            <div class="max-w-md">
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="brand-line"></div>
+                    <div>
+                        <h1 class="text-4xl font-bold text-slate-900 tracking-tight">CollectFlow</h1>
+                        <p class="text-slate-600 text-sm font-semibold tracking-wide">DCA MANAGEMENT SYSTEM</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-semibold text-slate-900 leading-snug">Enterprise Debt Collection Management</h2>
+                    <p class="text-slate-600 text-base leading-relaxed">
+                        A comprehensive platform designed for professional debt collection operations with advanced automation and analytics capabilities.
+                    </p>
+                </div>
+
+                <div class="mt-12 space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="mt-1">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-900">Autonomous AI Agents</p>
+                            <p class="text-sm text-slate-600">Automated case management and decision support</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="mt-1">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-900">Real-Time Analytics</p>
+                            <p class="text-sm text-slate-600">Live performance tracking and reporting</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="mt-1">
+                            <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-900">Enterprise Integration</p>
+                            <p class="text-sm text-slate-600">RPA connectivity with legacy ERP systems</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-16 pt-8 border-t border-slate-200">
+                    <!-- <p class="text-xs text-slate-500">Hackathon Demo Project - For Educational Purposes Only</p>
+                    <p class="text-xs text-slate-400 mt-1">This is a demonstration system showcasing AI-powered debt collection management</p> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="flex-1 flex items-center justify-center p-8">
+            <div class="w-full max-w-md">
+                
+                <!-- Mobile Logo -->
+                <div class="lg:hidden mb-8 text-center">
+                    <h1 class="text-3xl font-bold text-slate-900">CollectFlow</h1>
+                    <p class="text-slate-600 text-sm font-semibold">DCA MANAGEMENT</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2">Sign In</h2>
+                    <p class="text-slate-600">Access your dashboard</p>
+                </div>
+
+                <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-circle text-sm"></i>
+                        <span id="error-text" class="text-sm font-medium"></span>
+                    </div>
+                </div>
+
+                <form id="login-form" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2" for="email">
+                            Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            required
+                            class="w-full px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                            placeholder="your@email.com"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2" for="password">
+                            Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            required
+                            class="w-full px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                            placeholder="Enter your password"
+                        >
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        id="login-btn"
+                        class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-colors duration-200"
+                    >
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="mt-8 pt-6 border-t border-slate-200">
+                    <p class="text-sm font-semibold text-slate-700 mb-4">Demo Accounts</p>
+                    
+                    <div class="space-y-2">
+                        <!-- System Admin -->
+                        <div class="credential-card bg-white border border-slate-200 rounded-lg p-3" onclick="fillCredentials('admin@fedex.com', 'password123')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                                        <i class="fas fa-shield text-slate-700 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-900">System Admin</p>
+                                        <p class="text-xs text-slate-500">admin@fedex.com</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-arrow-right text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- System Manager -->
+                        <div class="credential-card bg-white border border-slate-200 rounded-lg p-3" onclick="fillCredentials('manager@fedex.com', 'password123')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                                        <i class="fas fa-user-tie text-slate-700 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-900">System Manager</p>
+                                        <p class="text-xs text-slate-500">manager@fedex.com</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-arrow-right text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- DCA Premier -->
+                        <div class="credential-card bg-white border border-slate-200 rounded-lg p-3" onclick="fillCredentials('dca1@agency.com', 'password123')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                                        <i class="fas fa-building text-slate-700 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-900">DCA Premier</p>
+                                        <p class="text-xs text-slate-500">dca1@agency.com</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-arrow-right text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- DCA Swift -->
+                        <div class="credential-card bg-white border border-slate-200 rounded-lg p-3" onclick="fillCredentials('dca2@agency.com', 'password123')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                                        <i class="fas fa-users text-slate-700 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-900">DCA Swift</p>
+                                        <p class="text-xs text-slate-500">dca2@agency.com</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-arrow-right text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Agent -->
+                        <div class="credential-card bg-white border border-slate-200 rounded-lg p-3" onclick="fillCredentials('agent1@premier.com', 'password123')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                                        <i class="fas fa-user text-slate-700 text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-900">Premier Agent</p>
+                                        <p class="text-xs text-slate-500">agent1@premier.com</p>
+                                    </div>
+                                </div>
+                                <i class="fas fa-arrow-right text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-xs text-slate-500 mt-4 text-center">All accounts use password: <span class="font-semibold">password123</span></p>
+                </div>
+
+                <!-- Hackathon Footer -->
+                <div class="mt-8 pt-6 border-t border-slate-200">
+                    <div class="text-center space-y-2">
+                        <p class="text-xs font-semibold text-slate-700">Hackathon Demo Project</p>
+                        <p class="text-xs text-slate-500">CollectFlow - AI-Powered DCA Management System</p>
+                        <p class="text-xs text-slate-400">Built for educational purpose | Built by <a href="https://github.com/ishansurdi" target="_blank" class="text-orange-600 hover:text-orange-700 font-semibold">Ishan Surdi</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/auth.js"></script>
+    <script>
+        function fillCredentials(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            
+            // Visual feedback
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            
+            emailInput.classList.add('ring-2', 'ring-green-500', 'border-green-500');
+            passwordInput.classList.add('ring-2', 'ring-green-500', 'border-green-500');
+            
+            setTimeout(() => {
+                emailInput.classList.remove('ring-2', 'ring-green-500', 'border-green-500');
+                passwordInput.classList.remove('ring-2', 'ring-green-500', 'border-green-500');
+            }, 800);
+        }
+    </script>
+</body>
+</html>

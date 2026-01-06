@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPA Integration | CollectFlow Command</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .brand-line {
+            width: 4px;
+            height: 24px;
+            background: #FF6B00;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- NAVIGATION SIDEBAR -->
+    <aside class="w-20 lg:w-[260px] bg-white border-r border-slate-200 flex flex-col transition-all duration-300 z-50">
+        <!-- Logo Area -->
+        <div class="p-6 flex items-center gap-3 border-b border-slate-200">
+            <div class="brand-line"></div>
+            <div class="hidden lg:block leading-none">
+                <span class="text-xl font-bold text-slate-900">CollectFlow</span>
+                <p class="text-xs text-slate-500 font-semibold">DCA Command</p>
+            </div>
+        </div>
+
+        <!-- Menu items -->
+        <nav class="flex-grow px-4 mt-6 space-y-1">
+            <a href="/dashboard.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-chart-line w-6"></i>
+                <span class="hidden lg:block ml-3">Operations Hub</span>
+            </a>
+            <a href="/case_management.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="hidden lg:block ml-3">Case Management</span>
+            </a>
+            <a href="/business_analytics.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-chart-pie w-6"></i>
+                <span class="hidden lg:block ml-3">Business Analytics</span>
+            </a>
+            <a href="/agents_dashboard.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-robot w-6"></i>
+                <span class="hidden lg:block ml-3">AI Agents</span>
+            </a>
+            <a href="/rpa_integration.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg bg-slate-100 text-slate-900 border-l-4 border-l-orange-500">
+                <i class="fas fa-gears w-6"></i>
+                <span class="hidden lg:block ml-3">RPA Integration</span>
+            </a>
+            <a href="/dca_portal.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-users-gear w-6"></i>
+                <span class="hidden lg:block ml-3">DCA Portal</span>
+            </a>
+        </nav>
+
+        <!-- User footer -->
+        <div class="p-4 border-t border-slate-200">
+            <button onclick="logout()" class="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition-all">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                <span class="hidden lg:inline">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar">
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">RPA Integration</h1>
+                    <p class="text-sm text-slate-600 mt-1 font-medium">Legacy System Automation & Data Synchronization</p>
+                </div>
+                <button onclick="checkRPAHealth()" class="px-6 py-3 bg-[#4D148C] hover:bg-[#3d1070] text-white rounded-xl font-bold shadow-lg transition-all">
+                    <i class="fas fa-heart-pulse mr-2"></i>Health Check
+                </button>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-6">
+            <!-- System Status Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- SAP Status -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="h-12 w-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-database text-blue-600 text-xl"></i>
+                        </div>
+                        <span id="sap-status" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-black uppercase">
+                            Checking...
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-2">SAP ERP</h3>
+                    <p class="text-sm text-slate-600 mb-4">Financial Accounting (FI/CO)</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-semibold">Last Sync:</span>
+                        <span id="sap-last-sync" class="text-xs text-slate-700 font-bold">--</span>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="syncSAP()" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold transition-all">
+                            <i class="fas fa-sync mr-2"></i>Sync Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Oracle Status -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="h-12 w-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-server text-red-600 text-xl"></i>
+                        </div>
+                        <span id="oracle-status" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-black uppercase">
+                            Checking...
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-2">Oracle EBS</h3>
+                    <p class="text-sm text-slate-600 mb-4">Accounts Receivable Module</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-semibold">Last Sync:</span>
+                        <span id="oracle-last-sync" class="text-xs text-slate-700 font-bold">--</span>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="syncOracle()" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-all">
+                            <i class="fas fa-sync mr-2"></i>Sync Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Generic Bot Status -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="h-12 w-12 bg-purple-100 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-robot text-purple-600 text-xl"></i>
+                        </div>
+                        <span id="bot-status" class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-black uppercase">
+                            Active
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-2">RPA Bot</h3>
+                    <p class="text-sm text-slate-600 mb-4">Automation Engine</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-semibold">Tasks Today:</span>
+                        <span id="bot-tasks" class="text-xs text-slate-700 font-bold">--</span>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="exportCaseUpdates()" class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-bold transition-all">
+                            <i class="fas fa-upload mr-2"></i>Export Updates
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Activity Log -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Sync Activity Log</h2>
+                    <button onclick="refreshLog()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-all">
+                        <i class="fas fa-refresh mr-2"></i>Refresh
+                    </button>
+                </div>
+                <div class="space-y-3" id="sync-log">
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                        <i class="fas fa-clock text-slate-400"></i>
+                        <span class="text-sm text-slate-600 font-medium">No sync activities yet. Click "Sync Now" to start.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual Actions Section -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                <h2 class="text-xl font-extrabold text-slate-900 tracking-tight mb-6">Manual Actions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="testPaymentReceived()" class="p-4 bg-green-50 hover:bg-green-100 border-2 border-green-200 rounded-2xl text-left transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="h-10 w-10 bg-green-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-money-bill-wave text-white"></i>
+                            </div>
+                            <h3 class="font-extrabold text-slate-900">Test Payment Receipt</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 font-medium">Simulate payment received from legacy system</p>
+                    </button>
+
+                    <button onclick="pullCaseUpdates()" class="p-4 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl text-left transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-download text-white"></i>
+                            </div>
+                            <h3 class="font-extrabold text-slate-900">Pull Case Updates</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 font-medium">Retrieve latest case updates from ERP systems</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/auth.js"></script>
+    <script>
+        // Role-based access control
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Redirect DCA users
+            if (user.role === 'dca') {
+                window.location.href = '/dca_portal.html';
+                return;
+            }
+
+            // Hide FedEx-only items for non-FedEx users
+            if (!user.role || (!user.role.startsWith('fedex'))) {
+                document.querySelectorAll('.fedex-only').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+
+            // Initial health check
+            checkRPAHealth();
+        });
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const id = 'notif-' + Date.now();
+            
+            const colors = {
+                success: 'bg-green-50 border-green-500 text-green-800',
+                error: 'bg-red-50 border-red-500 text-red-800',
+                info: 'bg-blue-50 border-blue-500 text-blue-800',
+                warning: 'bg-yellow-50 border-yellow-500 text-yellow-800'
+            };
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle',
+                warning: 'fa-exclamation-triangle'
+            };
+            
+            const notification = document.createElement('div');
+            notification.id = id;
+            notification.className = `${colors[type]} border-l-4 p-4 rounded-xl shadow-lg max-w-md`;
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${icons[type]} text-lg"></i>
+                    <span class="font-semibold text-sm">${message}</span>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        function addLogEntry(system, action, status) {
+            const log = document.getElementById('sync-log');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const statusColors = {
+                success: 'text-green-600 bg-green-50',
+                error: 'text-red-600 bg-red-50',
+                running: 'text-blue-600 bg-blue-50'
+            };
+            
+            const entry = document.createElement('div');
+            entry.className = 'flex items-center justify-between p-4 bg-slate-50 rounded-2xl';
+            entry.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-${system === 'SAP' ? 'database' : system === 'Oracle' ? 'server' : 'robot'} text-slate-600"></i>
+                    <div>
+                        <p class="font-bold text-sm text-slate-900">${system} - ${action}</p>
+                        <p class="text-xs text-slate-500 font-medium">${timestamp}</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 ${statusColors[status]} rounded-full text-xs font-black uppercase">
+                    ${status}
+                </span>
+            `;
+            
+            log.insertBefore(entry, log.firstChild);
+            
+            // Keep only last 10 entries
+            while (log.children.length > 10) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        async function checkRPAHealth() {
+            try {
+                showNotification('Checking RPA system health...', 'info');
+                addLogEntry('System', 'Health Check', 'running');
+                
+                const response = await api.get('/integration/rpa/health-check');
+                
+                if (response.status === 'healthy') {
+                    document.getElementById('sap-status').textContent = 'Connected';
+                    document.getElementById('sap-status').className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-black uppercase';
+                    
+                    document.getElementById('oracle-status').textContent = 'Connected';
+                    document.getElementById('oracle-status').className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-black uppercase';
+                    
+                    showNotification('All RPA systems are healthy', 'success');
+                    addLogEntry('System', 'Health Check', 'success');
+                } else {
+                    throw new Error('Health check failed');
+                }
+            } catch (error) {
+                console.error('Health check failed:', error);
+                showNotification('Failed to check RPA health', 'error');
+                addLogEntry('System', 'Health Check', 'error');
+                
+                document.getElementById('sap-status').textContent = 'Unknown';
+                document.getElementById('oracle-status').textContent = 'Unknown';
+            }
+        }
+
+        async function syncSAP() {
+            try {
+                showNotification('Starting SAP synchronization...', 'info');
+                addLogEntry('SAP', 'Sync Accounts', 'running');
+                
+                const response = await api.post('/integration/rpa/sap/sync-accounts', {
+                    threshold_days: 30
+                });
+                
+                showNotification(`SAP Sync Complete: ${response.synced_count || 0} accounts synced`, 'success');
+                addLogEntry('SAP', 'Sync Accounts', 'success');
+                
+                const timestamp = new Date().toLocaleString();
+                document.getElementById('sap-last-sync').textContent = timestamp;
+            } catch (error) {
+                console.error('SAP sync failed:', error);
+                showNotification('SAP synchronization failed', 'error');
+                addLogEntry('SAP', 'Sync Accounts', 'error');
+            }
+        }
+
+        async function syncOracle() {
+            try {
+                showNotification('Starting Oracle synchronization...', 'info');
+                addLogEntry('Oracle', 'Sync Receivables', 'running');
+                
+                const response = await api.post('/integration/rpa/oracle/sync-receivables', {
+                    status: 'OVERDUE'
+                });
+                
+                showNotification(`Oracle Sync Complete: ${response.synced_count || 0} receivables synced`, 'success');
+                addLogEntry('Oracle', 'Sync Receivables', 'success');
+                
+                const timestamp = new Date().toLocaleString();
+                document.getElementById('oracle-last-sync').textContent = timestamp;
+            } catch (error) {
+                console.error('Oracle sync failed:', error);
+                showNotification('Oracle synchronization failed', 'error');
+                addLogEntry('Oracle', 'Sync Receivables', 'error');
+            }
+        }
+
+        async function exportCaseUpdates() {
+            try {
+                showNotification('Exporting case updates...', 'info');
+                addLogEntry('Bot', 'Export Updates', 'running');
+                
+                const response = await api.post('/integration/rpa/export-case-updates', {
+                    since_hours: 24
+                });
+                
+                showNotification(`Export Complete: ${response.exported_count || 0} cases exported`, 'success');
+                addLogEntry('Bot', 'Export Updates', 'success');
+            } catch (error) {
+                console.error('Export failed:', error);
+                showNotification('Failed to export case updates', 'error');
+                addLogEntry('Bot', 'Export Updates', 'error');
+            }
+        }
+
+        async function testPaymentReceived() {
+            try {
+                showNotification('Simulating payment receipt...', 'info');
+                addLogEntry('Bot', 'Test Payment', 'running');
+                
+                const response = await api.post('/integration/rpa/payment-received', {
+                    account_number: 'TEST-' + Date.now(),
+                    amount: 5000.00,
+                    payment_date: new Date().toISOString(),
+                    reference_number: 'REF-' + Date.now()
+                });
+                
+                showNotification('Payment notification processed successfully', 'success');
+                addLogEntry('Bot', 'Test Payment', 'success');
+            } catch (error) {
+                console.error('Payment test failed:', error);
+                showNotification('Failed to process payment notification', 'error');
+                addLogEntry('Bot', 'Test Payment', 'error');
+            }
+        }
+
+        async function pullCaseUpdates() {
+            try {
+                showNotification('Pulling case updates from ERP systems...', 'info');
+                addLogEntry('Bot', 'Pull Updates', 'running');
+                
+                // Simulate pulling updates
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                showNotification('Case updates retrieved successfully', 'success');
+                addLogEntry('Bot', 'Pull Updates', 'success');
+            } catch (error) {
+                console.error('Pull updates failed:', error);
+                showNotification('Failed to pull case updates', 'error');
+                addLogEntry('Bot', 'Pull Updates', 'error');
+            }
+        }
+
+        function refreshLog() {
+            showNotification('Refreshing activity log...', 'info');
+            checkRPAHealth();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents | CollectFlow Command</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .brand-line {
+            width: 4px;
+            height: 24px;
+            background: #FF6B00;
+            border-radius: 2px;
+        }
+
+        .agent-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.15s ease;
+        }
+        .agent-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        @keyframes pulse-ring {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .pulse-active {
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- NAVIGATION SIDEBAR -->
+    <aside class="w-20 lg:w-[260px] bg-white border-r border-slate-200 flex flex-col transition-all duration-300 z-50">
+        <div class="p-6 flex items-center gap-3 border-b border-slate-200">
+            <div class="brand-line"></div>
+            <div class="hidden lg:block leading-none">
+                <span class="text-xl font-bold text-slate-900">CollectFlow</span>
+                <p class="text-xs text-slate-500 font-semibold">DCA Command</p>
+            </div>
+        </div>
+
+        <nav class="flex-grow px-4 mt-6 space-y-1">
+            <a href="/dashboard.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-chart-line w-6"></i>
+                <span class="hidden lg:block ml-3">Operations Hub</span>
+            </a>
+            <a href="/case_management.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="hidden lg:block ml-3">Case Management</span>
+            </a>
+            <a href="/business_analytics.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-chart-pie w-6"></i>
+                <span class="hidden lg:block ml-3">Business Analytics</span>
+            </a>
+            <a href="/agents_dashboard.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg bg-slate-100 text-slate-900 border-l-4 border-l-orange-500">
+                <i class="fas fa-robot w-6"></i>
+                <span class="hidden lg:block ml-3">AI Agents</span>
+            </a>
+            <a href="/rpa_integration.html" class="fedex-only group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-gears w-6"></i>
+                <span class="hidden lg:block ml-3">RPA Integration</span>
+            </a>
+            <a href="/dca_portal.html" class="group flex items-center px-4 py-3 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+                <i class="fas fa-users-gear w-6"></i>
+                <span class="hidden lg:block ml-3">DCA Portal</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200">
+            <div class="px-4 py-3 bg-slate-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <div class="h-9 w-9 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="hidden lg:block">
+                        <p id="user-name" class="text-xs font-semibold text-slate-900 leading-none">System Admin</p>
+                        <button onclick="logout()" class="text-xs text-slate-500 mt-1 hover:text-slate-900 transition-colors">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN INTERFACE -->
+    <div class="flex-grow flex flex-col min-w-0 bg-[#f8fafc]">
+        
+        <!-- HEADER -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-40">
+            <div class="flex items-center gap-4">
+                <h2 class="text-xl font-extrabold text-[#050B20]">AI Agents Dashboard</h2>
+                <div class="flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-active"></span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Monitoring</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2">
+                    <div class="h-8 w-8 bg-purple-50 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-purple-600 text-sm"></i>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Orchestrator</p>
+                        <p id="orchestrator-status-header" class="text-xs font-black text-emerald-600">Running</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow overflow-y-auto custom-scrollbar p-8">
+            <div class="max-w-[1600px] mx-auto space-y-8">
+                
+                <!-- System Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Orchestrator Status -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Orchestrator</span>
+                            <div class="h-10 w-10 bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-cogs text-purple-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <div id="orchestrator-status">
+                            <span class="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Active Agents -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Active Agents</span>
+                            <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-robot text-blue-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <h3 id="active-agents" class="text-4xl font-extrabold text-[#050B20] tracking-tighter">-</h3>
+                    </div>
+
+                    <!-- Total Actions -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Total Actions</span>
+                            <div class="h-10 w-10 bg-orange-50 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-bolt text-orange-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <h3 id="total-actions" class="text-4xl font-extrabold text-[#050B20] tracking-tighter">-</h3>
+                    </div>
+
+                    <!-- Success Rate -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm bg-gradient-to-br from-green-50 to-white">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Success Rate</span>
+                            <div class="h-10 w-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-lg"></i>
+                            </div>
+                        </div>
+                        <h3 id="success-rate" class="text-4xl font-extrabold text-green-600 tracking-tighter">-</h3>
+                    </div>
+                </div>
+
+                <!-- Individual Agent Cards -->
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-[#050B20]">Autonomous Agents</h3>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Real-time Agent Status & Performance</p>
+                        </div>
+                    </div>
+
+                    <div id="agents-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                        <!-- Agent cards will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm p-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-[#050B20]">Recent Agent Activity</h3>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Last 20 Autonomous Actions <span id="last-update" class="text-green-600">● Live</span></p>
+                        </div>
+                        <button onclick="refreshActivity()" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl text-xs font-black text-white uppercase tracking-wider transition-all shadow-sm hover:shadow-md">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Now
+                        </button>
+                        </button>
+                    </div>
+                    
+                    <div id="activity-log" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
+                        <p class="text-slate-500 text-center py-8">Loading agent activity...</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        let agentData = null;
+
+        // Load agent status
+        async function loadAgentStatus() {
+            try {
+                const response = await api.getAgentStatus();
+                agentData = response;
+                renderAgentDashboard(response);
+            } catch (error) {
+                console.error('Failed to load agent status:', error);
+                document.getElementById('orchestrator-status').innerHTML = 
+                    '<span class="inline-block px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs font-bold">Error</span>';
+                document.getElementById('orchestrator-status-header').textContent = 'Error';
+                document.getElementById('orchestrator-status-header').className = 'text-xs font-black text-red-600';
+            }
+        }
+
+        // Render agent dashboard
+        function renderAgentDashboard(data) {
+            // Update system overview
+            const isRunning = data.orchestrator_running;
+            document.getElementById('orchestrator-status').innerHTML = isRunning
+                ? '<span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-bold"><i class="fas fa-check-circle mr-1"></i>Running</span>'
+                : '<span class="inline-block px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs font-bold"><i class="fas fa-times-circle mr-1"></i>Stopped</span>';
+            
+            document.getElementById('orchestrator-status-header').textContent = isRunning ? 'Running' : 'Stopped';
+            document.getElementById('orchestrator-status-header').className = isRunning 
+                ? 'text-xs font-black text-emerald-600' 
+                : 'text-xs font-black text-red-600';
+            
+            const agents = data.agents || {};
+            const agentCount = Object.keys(agents).length;
+            document.getElementById('active-agents').textContent = agentCount;
+            
+            // Calculate totals
+            let totalActions = 0;
+            let totalSuccess = 0;
+            let totalFailures = 0;
+            
+            Object.values(agents).forEach(agent => {
+                const metrics = agent.performance_metrics || {};
+                totalActions += metrics.actions_count || 0;
+                totalSuccess += metrics.success_count || 0;
+                totalFailures += metrics.failure_count || 0;
+            });
+            
+            document.getElementById('total-actions').textContent = totalActions.toLocaleString();
+            
+            const successRate = totalActions > 0 
+                ? ((totalSuccess / totalActions) * 100).toFixed(1) + '%'
+                : 'N/A';
+            document.getElementById('success-rate').textContent = successRate;
+            
+            // Render individual agents
+            renderAgentCards(agents);
+        }
+
+        // Render individual agent cards
+        function renderAgentCards(agents) {
+            const container = document.getElementById('agents-container');
+            container.innerHTML = '';
+            
+            // Map backend agent keys to display names
+            const agentNameMap = {
+                'case_management': 'CaseManagementAgent',
+                'sla_monitoring': 'SLAMonitoringAgent',
+                'learning': 'LearningAgent',
+                'recovery_optimization': 'RecoveryOptimizationAgent'
+            };
+            
+            const agentConfig = {
+                'CaseManagementAgent': {
+                    icon: 'fa-folder-open',
+                    color: '#3b82f6',
+                    bgColor: 'bg-blue-50',
+                    borderColor: 'border-blue-200',
+                    textColor: 'text-blue-600'
+                },
+                'SLAMonitoringAgent': {
+                    icon: 'fa-clock',
+                    color: '#ef4444',
+                    bgColor: 'bg-red-50',
+                    borderColor: 'border-red-200',
+                    textColor: 'text-red-600'
+                },
+                'LearningAgent': {
+                    icon: 'fa-brain',
+                    color: '#8b5cf6',
+                    bgColor: 'bg-purple-50',
+                    borderColor: 'border-purple-200',
+                    textColor: 'text-purple-600'
+                },
+                'RecoveryOptimizationAgent': {
+                    icon: 'fa-chart-line',
+                    color: '#10b981',
+                    bgColor: 'bg-green-50',
+                    borderColor: 'border-green-200',
+                    textColor: 'text-green-600'
+                }
+            };
+            
+            Object.entries(agents).forEach(([backendName, agent]) => {
+                const displayName = agentNameMap[backendName] || agent.name;
+                const config = agentConfig[displayName] || {
+                    icon: 'fa-robot',
+                    color: '#4D148C',
+                    bgColor: 'bg-purple-50',
+                    borderColor: 'border-purple-200',
+                    textColor: 'text-purple-600'
+                };
+                
+                const metrics = agent.performance_metrics || {};
+                const successRate = metrics.actions_count > 0 
+                    ? ((metrics.success_count / metrics.actions_count) * 100).toFixed(1)
+                    : '0';
+                
+                const statusClasses = agent.state === 'active' 
+                    ? 'bg-emerald-100 text-emerald-700' 
+                    : agent.state === 'idle'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-red-100 text-red-700';
+                
+                const card = `
+                    <div class="agent-card p-6 rounded-3xl shadow-sm">
+                        <div class="text-center mb-6">
+                            <div class="h-16 w-16 ${config.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas ${config.icon} ${config.textColor} text-3xl"></i>
+                            </div>
+                            <h4 class="text-sm font-extrabold text-[#050B20] mb-2">${displayName}</h4>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${statusClasses}">
+                                ${agent.state.toUpperCase()}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
+                                <span class="text-xs font-bold text-slate-600">Actions Taken</span>
+                                <span class="text-lg font-extrabold text-[#050B20]">${agent.actions_taken_count || 0}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
+                                <span class="text-xs font-bold text-slate-600">Decisions Made</span>
+                                <span class="text-lg font-extrabold text-[#050B20]">${agent.decisions_made_count || 0}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
+                                <span class="text-xs font-bold text-green-700">Success Rate</span>
+                                <span class="text-lg font-extrabold text-green-600">${successRate}%</span>
+                            </div>
+                        </div>
+                        
+                        ${agent.last_action_time 
+                            ? `<p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-widest text-center">
+                                Last: ${convertToIST(agent.last_action_time)} IST
+                               </p>`
+                            : '<p class="text-[10px] text-slate-400 mt-4 font-bold uppercase tracking-widest text-center">No actions yet</p>'}
+                        
+                        <button onclick="triggerAgent('${backendName}')" id="trigger-btn-${backendName}" class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-play mr-2"></i>Trigger Now
+                        </button>
+                    </div>
+                `;
+                
+                container.innerHTML += card;
+            });
+        }
+
+        // Trigger specific agent
+        async function triggerAgent(agentName) {
+            // Disable the button
+            const btn = document.getElementById(`trigger-btn-${agentName}`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Working...';
+            }
+            
+            try {
+                // Map backend name to display name
+                const agentNameMap = {
+                    'case_management': 'CaseManagementAgent',
+                    'sla_monitoring': 'SLAMonitoringAgent',
+                    'learning': 'LearningAgent',
+                    'recovery_optimization': 'RecoveryOptimizationAgent'
+                };
+                const displayName = agentNameMap[agentName] || agentName;
+                
+                // Show "Working" notification
+                const workingMessage = document.createElement('div');
+                workingMessage.id = `agent-working-${agentName}`;
+                workingMessage.className = 'fixed top-24 right-8 bg-white border-l-4 border-blue-500 p-5 rounded-2xl shadow-2xl z-50 min-w-[320px]';
+                workingMessage.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center animate-pulse">
+                                <i class="fas fa-cog fa-spin text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-extrabold text-slate-900 mb-1">Agent Executing</h4>
+                            <p class="text-xs text-slate-600 font-semibold mb-1">${displayName}</p>
+                            <p class="text-xs text-slate-500">Analyzing data and taking autonomous actions...</p>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(workingMessage);
+                
+                // Store current activity count to detect new actions
+                const currentCount = lastActivityCount;
+                
+                // Trigger the agent
+                const response = await api.triggerAgent(agentName);
+                
+                // Wait for database to update
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Refresh data
+                await loadAgentStatus();
+                await loadAgentActivity();
+                
+                // Remove working notification
+                workingMessage.remove();
+                
+                // Check if new activities were added
+                const newActions = lastActivityCount - currentCount;
+                
+                // Show completion message with results
+                const message = document.createElement('div');
+                message.className = 'fixed top-24 right-8 bg-white border-l-4 border-green-500 p-5 rounded-2xl shadow-2xl z-50 min-w-[320px]';
+                message.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-check-circle text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-extrabold text-slate-900 mb-1">Execution Complete</h4>
+                            <p class="text-xs text-slate-600 font-semibold mb-2">${displayName}</p>
+                            ${newActions > 0 ? 
+                                `<div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold">
+                                        <i class="fas fa-bolt mr-1.5"></i>${newActions} Action${newActions > 1 ? 's' : ''} Taken
+                                    </span>
+                                </div>` : 
+                                `<div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold">
+                                        <i class="fas fa-info-circle mr-1.5"></i>No Actions Required
+                                    </span>
+                                </div>`
+                            }
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="flex-shrink-0 text-slate-400 hover:text-slate-600 transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(message);
+                setTimeout(() => message.remove(), 6000);
+                
+                // Re-enable the button
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-play mr-2"></i>Trigger Now';
+                }
+                
+            } catch (error) {
+                // Remove working notification if exists
+                const workingMsg = document.getElementById(`agent-working-${agentName}`);
+                if (workingMsg) workingMsg.remove();
+                
+                // Re-enable the button
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-play mr-2"></i>Trigger Now';
+                }
+                
+                const message = document.createElement('div');
+                message.className = 'fixed top-24 right-8 bg-white border-l-4 border-red-500 p-5 rounded-2xl shadow-2xl z-50 min-w-[320px]';
+                message.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-extrabold text-slate-900 mb-1">Execution Failed</h4>
+                            <p class="text-xs text-slate-600 font-semibold mb-1">${displayName || agentName}</p>
+                            <p class="text-xs text-slate-500">${error.message || 'An unknown error occurred'}</p>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="flex-shrink-0 text-slate-400 hover:text-slate-600 transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(message);
+                setTimeout(() => message.remove(), 6000);
+            }
+        }
+
+        let lastActivityCount = 0;
+
+        // Load recent agent activity from events
+        async function loadAgentActivity() {
+            try {
+                const events = await api.request('/agents/activity?limit=20');
+                renderAgentActivity(events);
+                
+                // Check for new activities
+                if (lastActivityCount > 0 && events.length > lastActivityCount) {
+                    const newCount = events.length - lastActivityCount;
+                    showNewActivityNotification(newCount);
+                }
+                lastActivityCount = events.length;
+                
+                // Update last refresh timestamp
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                document.getElementById('last-update').innerHTML = `● Updated ${timeStr}`;
+                document.getElementById('last-update').className = 'text-green-600';
+                
+            } catch (error) {
+                console.error('Failed to load agent activity:', error);
+                document.getElementById('activity-log').innerHTML = 
+                    '<p class="text-red-600 text-center py-8">Error loading activity. Check console for details.</p>';
+                document.getElementById('last-update').innerHTML = '● Error';
+                document.getElementById('last-update').className = 'text-red-600';
+            }
+        }
+        
+        // Show notification for new activities
+        function showNewActivityNotification(count) {
+            const message = document.createElement('div');
+            message.className = 'fixed top-20 right-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-xl shadow-2xl z-50 animate-bounce';
+            message.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-bell text-2xl"></i>
+                    <div>
+                        <p class="font-bold">New Agent Activity!</p>
+                        <p class="text-sm">${count} new action${count > 1 ? 's' : ''} detected</p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(message);
+            setTimeout(() => message.remove(), 4000);
+        }
+
+        // Helper function to convert UTC to IST
+        function convertToIST(timestamp) {
+            const date = new Date(timestamp);
+            // IST is UTC + 5:30
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(date.getTime() + istOffset);
+            return istDate.toLocaleString('en-IN', { 
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Helper function to get relative time
+        function getRelativeTime(timestamp) {
+            // Both current time and backend timestamp should be compared directly
+            const now = new Date();
+            const date = new Date(timestamp);
+            
+            // Calculate difference in milliseconds
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        }
+
+        // Render agent activity
+        function renderAgentActivity(events) {
+            const container = document.getElementById('activity-log');
+            
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="h-12 w-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-900 mb-2">No Autonomous Agent Activity Yet</h4>
+                                <p class="text-sm text-blue-700 mb-3">Agents will start working automatically based on their schedules:</p>
+                                <ul class="space-y-1 text-sm text-blue-600">
+                                    <li><i class="fas fa-clock mr-2"></i>SLA Monitoring: Every 5 minutes</li>
+                                    <li><i class="fas fa-clock mr-2"></i>Case Management: Every 10 minutes</li>
+                                    <li><i class="fas fa-clock mr-2"></i>Recovery Optimization: Every 30 minutes</li>
+                                    <li><i class="fas fa-clock mr-2"></i>Learning Agent: Every 2 hours</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = events.map((event, index) => {
+                const timestamp = convertToIST(event.timestamp);
+                
+                // Check if this is a new event (first 3 events)
+                const isNew = index < 3;
+                
+                // Map agent name from metadata or infer from event type
+                let agentName = event.metadata?.agent_name || 'Unknown Agent';
+                if (agentName === 'Unknown Agent') {
+                    // Try to infer agent from event type
+                    if (event.event_type.includes('reminder') || event.event_type.includes('sla')) {
+                        agentName = 'SLAMonitoringAgent';
+                    } else if (event.event_type.includes('recovery')) {
+                        agentName = 'RecoveryOptimizationAgent';
+                    } else if (event.event_type.includes('case') || event.event_type.includes('assign')) {
+                        agentName = 'CaseManagementAgent';
+                    } else if (event.event_type.includes('learning')) {
+                        agentName = 'LearningAgent';
+                    }
+                }
+                
+                const confidence = event.metadata?.confidence ? 
+                    `${(event.metadata.confidence * 100).toFixed(0)}%` : null;
+                
+                let icon = 'fa-robot';
+                let badgeClass = 'bg-purple-100 text-purple-700';
+                
+                if (event.event_type.includes('escalat')) {
+                    icon = 'fa-exclamation-triangle';
+                    badgeClass = 'bg-yellow-100 text-yellow-700';
+                } else if (event.event_type.includes('assign')) {
+                    icon = 'fa-user-check';
+                    badgeClass = 'bg-green-100 text-green-700';
+                } else if (event.event_type.includes('creat')) {
+                    icon = 'fa-plus-circle';
+                    badgeClass = 'bg-blue-100 text-blue-700';
+                } else if (event.event_type.includes('reminder')) {
+                    icon = 'fa-bell';
+                    badgeClass = 'bg-yellow-100 text-yellow-700';
+                } else if (event.event_type.includes('recovery')) {
+                    icon = 'fa-chart-line';
+                    badgeClass = 'bg-green-100 text-green-700';
+                }
+                
+                return `
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 hover:border-purple-300 transition-all hover:shadow-md">
+                        <div class="flex items-start gap-4">
+                            <div class="h-10 w-10 ${badgeClass} rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="flex-grow min-w-0">
+                                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                    <span class="inline-block px-2 py-1 ${badgeClass} rounded-lg text-xs font-bold uppercase tracking-wider">
+                                        ${event.event_type}
+                                    </span>
+                                    ${isNew ? '<span class="inline-block px-2 py-1 bg-gradient-to-r from-orange-100 to-red-100 text-orange-600 rounded-lg text-[10px] font-black uppercase animate-pulse"><i class="fas fa-star mr-1"></i>New</span>' : ''}
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${timestamp} IST</span>
+                                </div>
+                                
+                                <p class="text-sm text-slate-700 font-medium mb-3">${event.description}</p>
+                                
+                                <!-- Agent Details Card -->
+                                <div class="bg-white rounded-xl p-3 border border-slate-200 mb-3">
+                                    <div class="grid grid-cols-2 gap-3 text-xs">
+                                        ${event.case_id ? `
+                                        <div>
+                                            <span class="text-slate-500 font-semibold block mb-1">Case ID</span>
+                                            <span class="text-[#4D148C] font-bold">${event.case_id}</span>
+                                        </div>` : ''}
+                                        
+                                        ${agentName ? `
+                                        <div>
+                                            <span class="text-slate-500 font-semibold block mb-1">Executed By</span>
+                                            <span class="text-purple-600 font-bold">${agentName}</span>
+                                        </div>` : ''}
+                                        
+                                        ${confidence ? `
+                                        <div>
+                                            <span class="text-slate-500 font-semibold block mb-1">Confidence Level</span>
+                                            <span class="inline-block px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold">${confidence}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata?.decision ? `
+                                        <div>
+                                            <span class="text-slate-500 font-semibold block mb-1">Decision Made</span>
+                                            <span class="text-slate-700 font-bold">${event.metadata.decision}</span>
+                                        </div>` : ''}
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Details -->
+                                ${event.metadata && Object.keys(event.metadata).length > 0 ? `
+                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-200 mb-3">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-info-circle text-blue-600 text-sm"></i>
+                                        <span class="text-xs font-black text-blue-900 uppercase tracking-wider">Action Details</span>
+                                    </div>
+                                    <div class="space-y-1.5 text-xs">
+                                        ${event.metadata.decision ? `
+                                        <div class="bg-white rounded-lg p-2 border border-blue-200">
+                                            <span class="text-blue-700 font-semibold block mb-1">🤖 Agent Decision:</span>
+                                            <span class="text-blue-900 font-bold">${event.metadata.decision}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.reasoning ? `
+                                        <div class="bg-white rounded-lg p-2 border border-blue-200">
+                                            <span class="text-blue-700 font-semibold block mb-1">💡 Reasoning:</span>
+                                            <span class="text-slate-700">${event.metadata.reasoning}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.dca_id ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Assigned DCA:</span>
+                                            <span class="text-blue-900 font-bold">${event.metadata.dca_id}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.hours_remaining !== undefined ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Hours to SLA Deadline:</span>
+                                            <span class="text-orange-700 font-bold">${event.metadata.hours_remaining} hrs</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.priority ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Priority:</span>
+                                            <span class="inline-block px-2 py-1 bg-red-100 text-red-700 rounded font-bold uppercase text-[10px]">${event.metadata.priority}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.recovery_probability ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Recovery Probability:</span>
+                                            <span class="text-green-700 font-bold">${(event.metadata.recovery_probability * 100).toFixed(0)}%</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.amount_due ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Amount Due:</span>
+                                            <span class="text-blue-900 font-bold">$${event.metadata.amount_due.toLocaleString()}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.potential_value ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Potential Recovery Value:</span>
+                                            <span class="text-green-700 font-bold">$${event.metadata.potential_value.toLocaleString()}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.action_type ? `
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-blue-700 font-semibold">Action Type:</span>
+                                            <span class="text-blue-900 font-bold uppercase text-[10px]">${event.metadata.action_type}</span>
+                                        </div>` : ''}
+                                    </div>
+                                </div>` : ''}
+                                
+                                <!-- Proposed Changes Section -->
+                                ${event.metadata?.proposed_changes ? `
+                                <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-3 border-2 border-purple-300 mb-3">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-lightbulb text-purple-600 text-sm animate-pulse"></i>
+                                        <span class="text-xs font-black text-purple-900 uppercase tracking-wider">📝 Proposed Changes (Requires Approval)</span>
+                                    </div>
+                                    <div class="space-y-2 text-xs">
+                                        ${event.metadata.proposed_changes.priority ? `
+                                        <div class="bg-white rounded-lg p-2 border border-purple-200">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-purple-700 font-semibold">New Priority:</span>
+                                                <span class="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded font-bold uppercase">${event.metadata.proposed_changes.priority}</span>
+                                            </div>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.proposed_changes.recommended_action ? `
+                                        <div class="bg-white rounded-lg p-2 border border-purple-200">
+                                            <span class="text-purple-700 font-semibold block mb-1">Recommended Action:</span>
+                                            <span class="text-slate-700 font-medium">${event.metadata.proposed_changes.recommended_action}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.proposed_changes.action_required ? `
+                                        <div class="bg-white rounded-lg p-2 border border-purple-200">
+                                            <span class="text-purple-700 font-semibold block mb-1">Action Required:</span>
+                                            <span class="text-slate-700 font-medium">${event.metadata.proposed_changes.action_required}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.proposed_changes.reason ? `
+                                        <div class="bg-white rounded-lg p-2 border border-purple-200">
+                                            <span class="text-purple-700 font-semibold block mb-1">Reason:</span>
+                                            <span class="text-slate-700">${event.metadata.proposed_changes.reason}</span>
+                                        </div>` : ''}
+                                        
+                                        ${event.metadata.status === 'pending_approval' ? `
+                                        <div class="flex gap-2 mt-3">
+                                            <button class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-[10px] font-bold uppercase transition-all">
+                                                <i class="fas fa-check mr-1"></i>Approve
+                                            </button>
+                                            <button class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[10px] font-bold uppercase transition-all">
+                                                <i class="fas fa-times mr-1"></i>Reject
+                                            </button>
+                                        </div>` : ''}
+                                    </div>
+                                </div>` : ''}
+                                
+                                ${event.metadata?.autonomous === true ? `
+                                <div class="flex items-center gap-2 p-2 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-lg border border-purple-300">
+                                    <i class="fas fa-robot text-purple-600"></i>
+                                    <span class="text-purple-700 font-bold text-[10px] uppercase tracking-wider">🤖 Fully Autonomous Action</span>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Auto-refresh
+        function startAutoRefresh() {
+            loadAgentStatus();
+            loadAgentActivity();
+            
+            // Update every 5 seconds for more real-time feel
+            setInterval(() => {
+                loadAgentStatus();
+                loadAgentActivity();
+            }, 5000); // Refresh every 5 seconds
+        }
+        
+        // Manual refresh function
+        function refreshActivity() {
+            const btn = event.target.closest('button');
+            const icon = btn.querySelector('i');
+            
+            // Add spinning animation
+            icon.classList.add('fa-spin');
+            
+            loadAgentActivity().then(() => {
+                // Remove spinning after a short delay
+                setTimeout(() => {
+                    icon.classList.remove('fa-spin');
+                }, 500);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = checkAuth();
+            if (!user) {
+                return; // checkAuth handles redirect
+            }
+            
+            // Protect admin-only page from DCA users
+            if (user.role && user.role.startsWith('dca')) {
+                window.location.href = '/dca_portal.html';
+                return;
+            }
+            
+            document.getElementById('user-name').textContent = user.email || user.name;
+            startAutoRefresh();
+        });
+    </script>
+</body>
+</html>
