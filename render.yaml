@@ -1,7 +1,8 @@
 services:
   - type: web
     name: collectflow-backend
-    env: python
+    runtime: python
+    plan: free
     buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
     startCommand: cd backend && gunicorn --config gunicorn_config.py app:app
 
