@@ -8,13 +8,19 @@ class Config:
     
     # Flask settings
     SECRET_KEY = os.getenv('SECRET_KEY', 'fedex-dca-secret-key-change-in-production')
-    DEBUG = os.getenv('DEBUG', 'True') == 'True'
+    FLASK_ENV = os.getenv('FLASK_ENV', 'development')
+    DEBUG = FLASK_ENV == 'development'
     HOST = os.getenv('HOST', '0.0.0.0')
     PORT = int(os.getenv('PORT', 5000))
     
     # MongoDB settings
-    MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
-    MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'fedex_dca')
+    MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/')
+    MONGO_URI = MONGODB_URI  # Alias for backward compatibility
+    MONGODB_DB_NAME = os.getenv('MONGODB_DB_NAME', 'fedex_dca')
+    MONGO_DB_NAME = MONGODB_DB_NAME  # Alias for backward compatibility
+    
+    # CORS
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
     
     # JWT settings
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')

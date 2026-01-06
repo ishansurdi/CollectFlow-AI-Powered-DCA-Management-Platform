@@ -26,8 +26,8 @@ def create_app():
     app = Flask(__name__, static_folder='../frontend', static_url_path='')
     app.config.from_object(Config)
     
-    # Enable CORS - not needed since we're serving from same origin
-    # CORS(app)
+    # Enable CORS for production deployment
+    CORS(app, origins=app.config['CORS_ORIGINS'])
     
     # Setup logging
     logger = setup_logger()

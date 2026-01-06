@@ -1,5 +1,8 @@
-// API Configuration - Same origin, no CORS issues!
-const API_BASE_URL = '/api';
+// API Configuration
+// Use environment variable for production, default to relative path for local development
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? '/api' 
+    : (window.BACKEND_URL || '/api');
 
 // API Client Class
 class APIClient {
