@@ -2,10 +2,8 @@ services:
   - type: web
     name: collectflow-backend
     env: python
-    runtime: python-3.10.13
-
-    buildCommand: pip install --upgrade pip setuptools wheel && pip install --only-binary=:all: -r backend/requirements.txt || pip install -r backend/requirements.txt
-    startCommand: cd backend && gunicorn --bind 0.0.0.0:$PORT app:app
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    startCommand: cd backend && gunicorn --config gunicorn_config.py app:app
 
     envVars:
       - key: MONGODB_URI
