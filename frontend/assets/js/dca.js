@@ -7,6 +7,8 @@ async function loadDCAPortal() {
     // Get current user info
     currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     console.log('[DCA Portal] Current user:', currentUser);
+    console.log('[DCA Portal] User dca_id:', currentUser.dca_id);
+    console.log('[DCA Portal] User role:', currentUser.role);
     
     // If FedEx user, show DCA selector
     if (currentUser.role && currentUser.role.startsWith('fedex')) {
@@ -15,6 +17,7 @@ async function loadDCAPortal() {
         await loadDCAList();
     } else {
         console.log('[DCA Portal] DCA user detected, loading own portfolio...');
+        console.log('[DCA Portal] Will load portfolio without dca_id parameter (backend will use JWT)');
         // DCA users see their own data
         await Promise.all([
             loadPerformanceStats(),
