@@ -11,7 +11,7 @@ def get_dca_portfolio(dca_id, status=None, priority=None):
     try:
         cases = get_cases_collection()
         
-        filters = {'assigned_dca': dca_id}
+        filters = {'dca_id': dca_id}  # Use dca_id field, not assigned_dca
         
         if status:
             filters['status'] = status
@@ -46,19 +46,19 @@ def get_dca_performance(dca_id):
             raise ValueError(f"DCA {dca_id} not found")
         
         # Calculate real-time metrics
-        total_cases = cases.count_documents({'assigned_dca': dca_id})
+        total_cases = cases.count_documents({'dca_id': dca_id})
         active_cases = cases.count_documents({
-            'assigned_dca': dca_id,
+            'dca_id': dca_id,
             'status': {'$in': ['assigned', 'in_progress']}
         })
         resolved_cases = cases.count_documents({
-            'assigned_dca': dca_id,
+            'dca_id': dca_id,
             'status': 'resolved'
         })
         
         # Calculate recovery metrics
         pipeline = [
-            {'$match': {'assigned_dca': dca_id, 'status': 'resolved'}},
+            {'$match': {'dca_id': dca_id, 'status': 'resolved'}},
             {'$group': {'_id': None, 'total_recovered': {'$sum': '$amount'}}}
         ]
         recovery_result = list(cases.aggregate(pipeline))
@@ -66,7 +66,7 @@ def get_dca_performance(dca_id):
         
         # Calculate average recovery time
         resolved_with_time = list(cases.find({
-            'assigned_dca': dca_id,
+            'dca_id': dca_id,
             'status': 'resolved',
             'resolved_at': {'$exists': True},
             'assigned_at': {'$exists': True}
