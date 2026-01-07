@@ -33,14 +33,16 @@ def list_cases(current_user):
         # Filter based on role
         filters = {}
         if current_user['role'] in ['dca_admin', 'dca_agent']:
-            filters['assigned_dca'] = current_user.get('dca_id')
+            # DCA users only see their own cases
+            filters['dca_id'] = current_user.get('dca_id')
         
         if status:
             filters['status'] = status
         if priority:
             filters['priority'] = priority
         if assigned_dca and current_user['role'].startswith('fedex'):
-            filters['assigned_dca'] = assigned_dca
+            # FedEx users can filter by DCA
+            filters['dca_id'] = assigned_dca
         
         cases = get_all_cases(filters, limit, offset)
         
@@ -65,7 +67,7 @@ def get_case(current_user, case_id):
         
         # Check authorization
         if current_user['role'] in ['dca_admin', 'dca_agent']:
-            if case.get('assigned_dca') != current_user.get('dca_id'):
+            if case.get('dca_id') != current_user.get('dca_id'):
                 return jsonify({'error': 'Unauthorized'}), 403
         
         return jsonify(case), 200
