@@ -88,7 +88,9 @@ def create_app():
             from db.mongo import get_db
             db = get_db()
             users_count = db.users.count_documents({})
+            cases_count = db.cases.count_documents({})
             sample_user = db.users.find_one({}, {'email': 1, 'user_id': 1})
+            sample_case = db.cases.find_one({}, {'case_id': 1, 'status': 1, 'amount': 1})
             
             # Mask the connection string for security
             mongo_uri = app.config.get('MONGODB_URI', 'Not set')
@@ -101,7 +103,9 @@ def create_app():
                 'status': 'connected',
                 'database': masked_uri,
                 'users_count': users_count,
-                'sample_user': sample_user
+                'cases_count': cases_count,
+                'sample_user': sample_user,
+                'sample_case': sample_case
             }), 200
         except Exception as e:
             return jsonify({
