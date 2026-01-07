@@ -37,7 +37,7 @@ async function loadDCAList() {
     }
 }
 
-function loadSelectedDCA() {
+async function loadSelectedDCA() {
     const select = document.getElementById('dca-select');
     selectedDCAId = select.value;
     
@@ -46,11 +46,19 @@ function loadSelectedDCA() {
         return;
     }
     
+    console.log('[DCA Portal] Loading portfolio for:', selectedDCAId);
+    
     // Load data for selected DCA
-    Promise.all([
-        loadPerformanceStats(selectedDCAId),
-        loadPortfolio(null, null, selectedDCAId)
-    ]);
+    try {
+        await Promise.all([
+            loadPerformanceStats(selectedDCAId),
+            loadPortfolio(null, null, selectedDCAId)
+        ]);
+        console.log('[DCA Portal] Portfolio loaded successfully');
+    } catch (error) {
+        console.error('[DCA Portal] Error loading portfolio:', error);
+        alert('Failed to load DCA portfolio. Please try again.');
+    }
 }
 
 async function loadPerformanceStats(dcaId = null) {
@@ -80,12 +88,19 @@ async function loadPortfolio(status = null, priority = null, dcaId = null) {
         if (dcaId) params.dca_id = dcaId;
         
         const queryString = new URLSearchParams(params).toString();
+        console.log('[Portfolio] Query params:', params);
+        console.log('[Portfolio] Full URL:', `/api/dca/portfolio?${queryString}`);
+        
         const response = await fetch(`/api/dca/portfolio?${queryString}`, {
             headers: {
                 'Authorization': `Bearer ${api.getToken()}`,
                 'Content-Type': 'application/json'
             }
         }).then(res => res.json());
+        
+        console.log('[Portfolio] Response:', response);
+        console.log('[Portfolio] Cases count:', response.cases ? response.cases.length : 0);
+        
         const tbody = document.getElementById('portfolio-table');
         const countBadge = document.getElementById('case-count');
         
