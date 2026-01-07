@@ -81,6 +81,34 @@ def create_app():
             'service': 'FedEx DCA Management System'
         }), 200
     
+    # Debug endpoint to check database connection and users
+    @app.route('/api/debug/db-info', methods=['GET'])
+    def debug_db_info():
+        try:
+            from db.mongo import get_db
+            db = get_db()
+            users_count = db.users.count_documents({})
+            sample_user = db.users.find_one({}, {'email': 1, 'user_id': 1})
+            
+            # Mask the connection string for security
+            mongo_uri = app.config.get('MONGODB_URI', 'Not set')
+            if 'mongodb' in mongo_uri:
+                masked_uri = mongo_uri.split('@')[1] if '@' in mongo_uri else 'localhost'
+            else:
+                masked_uri = 'Not configured'
+            
+            return jsonify({
+                'status': 'connected',
+                'database': masked_uri,
+                'users_count': users_count,
+                'sample_user': sample_user
+            }), 200
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'error': str(e)
+            }), 500
+    
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
