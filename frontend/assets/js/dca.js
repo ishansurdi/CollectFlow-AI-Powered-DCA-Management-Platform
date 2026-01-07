@@ -3,14 +3,18 @@ let currentUser = null;
 let selectedDCAId = null;
 
 async function loadDCAPortal() {
+    console.log('[DCA Portal] Initializing...');
     // Get current user info
     currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    console.log('[DCA Portal] Current user:', currentUser);
     
     // If FedEx user, show DCA selector
     if (currentUser.role && currentUser.role.startsWith('fedex')) {
+        console.log('[DCA Portal] FedEx user detected, loading DCA list...');
         document.getElementById('dca-selector').classList.remove('hidden');
         await loadDCAList();
     } else {
+        console.log('[DCA Portal] DCA user detected, loading own portfolio...');
         // DCA users see their own data
         await Promise.all([
             loadPerformanceStats(),
@@ -20,20 +24,28 @@ async function loadDCAPortal() {
 }
 
 async function loadDCAList() {
+    console.log('[DCA List] Starting to load DCAs...');
     try {
         const response = await api.getDCAs();
+        console.log('[DCA List] API response:', response);
         const select = document.getElementById('dca-select');
+        console.log('[DCA List] Select element:', select);
         
         if (response.dcas && response.dcas.length > 0) {
+            console.log(`[DCA List] Found ${response.dcas.length} DCAs, adding to dropdown...`);
             response.dcas.forEach(dca => {
                 const option = document.createElement('option');
                 option.value = dca.dca_id;
                 option.textContent = `${dca.name} (${dca.dca_id})`;
                 select.appendChild(option);
+                console.log(`[DCA List] Added: ${dca.name} (${dca.dca_id})`);
             });
+            console.log('[DCA List] Dropdown populated successfully');
+        } else {
+            console.warn('[DCA List] No DCAs found in response');
         }
     } catch (error) {
-        console.error('Error loading DCA list:', error);
+        console.error('[DCA List] Error loading DCA list:', error);
     }
 }
 
